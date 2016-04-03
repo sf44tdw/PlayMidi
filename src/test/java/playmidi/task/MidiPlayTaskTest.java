@@ -92,7 +92,7 @@ public class MidiPlayTaskTest {
     public void testGetMicrosecondLength() throws IllegalArgumentException, MidiUnavailableException, IOException, FileNotFoundException, InvalidMidiDataException {
         System.out.println("getMicrosecondLength");
         MidiPlayTask instance = new MidiPlayTask(name, count);
-        long expResult = 243713897L;
+        long expResult = 71999928L;
         long result = instance.getMicrosecondLength();
         assertEquals(expResult, result);
     }
