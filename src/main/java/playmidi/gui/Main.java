@@ -22,11 +22,11 @@ import playmidi.task.MidiPlayTask;
  *
  * @author normal
  */
-public class PlayMidi extends javax.swing.JFrame {
+public class Main extends javax.swing.JFrame {
 
     private static String arg = "";
 
-    private static final Log LOG = LogFactory.getLog(PlayMidi.class);
+    private static final Log LOG = LogFactory.getLog(Main.class);
     private ScheduledExecutorService barRunner = null;
     private ScheduledExecutorService playerRunner = null;
     private MidiPlayTask pTask = null;
@@ -34,7 +34,7 @@ public class PlayMidi extends javax.swing.JFrame {
     /**
      * Creates new form PlayMidi
      */
-    public PlayMidi() {
+    public Main() {
         initComponents();
     }
 
@@ -197,7 +197,7 @@ public class PlayMidi extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PlayMidi().setVisible(true);
+                new Main().setVisible(true);
             }
         });
 
