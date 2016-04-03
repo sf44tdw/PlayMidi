@@ -28,7 +28,7 @@ public class Main extends javax.swing.JFrame {
     /**
      * falseのとき、このクラスはログを出さなくなる
      */
-    public static final boolean CLASS_LOG_OUTPUT_MODE = true;
+    public static final boolean CLASS_LOG_OUTPUT_MODE = false;
 
     private static final Log LOG;
 
