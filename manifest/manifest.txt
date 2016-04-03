@@ -1,3 +1,2 @@
-#maven-jar-pluginでマニフェストの指定ができなかったので、配置先ではビルド後に以下の内容をマニフェストに追記すること。
 Main-Class: playmidi.gui.Main
 Class-Path: apache-commons-logging.jar
