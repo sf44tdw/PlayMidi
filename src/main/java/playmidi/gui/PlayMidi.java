@@ -23,9 +23,9 @@ import playmidi.task.MidiPlayTask;
  * @author normal
  */
 public class PlayMidi extends javax.swing.JFrame {
-    
+
     private static String arg = "";
-    
+
     private static final Log LOG = LogFactory.getLog(PlayMidi.class);
     private ScheduledExecutorService barRunner = null;
     private ScheduledExecutorService playerRunner = null;
@@ -129,6 +129,7 @@ public class PlayMidi extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
     private void PlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButtonActionPerformed
         if (this.pTask != null) {
             barRunner = Executors.newSingleThreadScheduledExecutor();
@@ -152,9 +153,12 @@ public class PlayMidi extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if (this.pTask != null) {
-            this.pTask.stop();
             this.pTask.close();
+        }
+        if (this.playerRunner != null) {
             this.playerRunner.shutdownNow();
+        }
+        if (this.barRunner != null) {
             this.barRunner.shutdownNow();
         }
     }//GEN-LAST:event_formWindowClosing
@@ -196,7 +200,7 @@ public class PlayMidi extends javax.swing.JFrame {
                 new PlayMidi().setVisible(true);
             }
         });
-        
+
         if (!"".equals(args[0])) {
             arg = args[0];
         }
@@ -213,13 +217,13 @@ public class PlayMidi extends javax.swing.JFrame {
 
     private void openMidiFile(File f) {
         if (checkBeforeReadfile(f)) {
-            
+
             if (this.pTask != null) {
                 LOG.info("別のタスクがあるようならクローズする。");
                 this.pTask.close();
                 this.PositionBar.setValue(this.PositionBar.getMinimum());
             }
-            
+
             try {
                 FilePath.setText(f.getAbsolutePath());
                 this.pTask = new MidiPlayTask(f, 1);
@@ -232,7 +236,7 @@ public class PlayMidi extends javax.swing.JFrame {
             FilePath.setText("ファイルが見つからないか開けません");
         }
     }
-    
+
     private static boolean checkBeforeReadfile(File file) {
         if (file.exists()) {
             if (file.isFile() && file.canRead()) {
@@ -241,5 +245,5 @@ public class PlayMidi extends javax.swing.JFrame {
         }
         return false;
     }
-    
+
 }
