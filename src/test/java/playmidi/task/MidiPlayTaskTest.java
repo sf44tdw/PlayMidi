@@ -7,11 +7,9 @@ package playmidi.task;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -30,10 +28,11 @@ import static org.junit.Assert.*;
  */
 public class MidiPlayTaskTest {
 
-    private final File name = new File("H:/music/midi/music/eva.mid");
+    private final File name = new File("./testdata/entertainer.mid");
     private final int count = 1;
 
     public MidiPlayTaskTest() {
+
     }
 
     @BeforeClass
@@ -54,13 +53,13 @@ public class MidiPlayTaskTest {
 
     @Test(expected = FileNotFoundException.class)
     public void testConstructor_exists() throws MidiUnavailableException, IOException, FileNotFoundException, InvalidMidiDataException {
-        File name_dummy = new File("Z:/music/midi/music/eva.mid");
+        File name_dummy = new File("./testdata/entertainer2.mid");
         MidiPlayTask instance = new MidiPlayTask(name_dummy, count);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructor_isFile() throws MidiUnavailableException, IOException, FileNotFoundException, InvalidMidiDataException {
-        File name_dummy = new File("H:/music/midi/music");
+        File name_dummy = new File("./testdata/");
         MidiPlayTask instance = new MidiPlayTask(name_dummy, count);
     }
 
