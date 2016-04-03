@@ -1,2 +1,2 @@
 Main-Class: playmidi.gui.Main
-Class-Path: apache-commons-logging.jar
+Class-Path: . apache-commons-logging.jar
