@@ -10,8 +10,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
@@ -19,6 +17,7 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.impl.NoOpLog;
 
 /**
  * 指定の回数だけファイルの再生を行い、再生中は待機する。
@@ -26,18 +25,31 @@ import org.apache.commons.logging.LogFactory;
  * @author normal
  */
 public final class MidiPlayTask implements Runnable, AutoCloseable {
-    
-    private static final Log LOG = LogFactory.getLog(MidiPlayTask.class);
-    
+
+    /**
+     * falseのとき、このクラスはログを出さなくなる
+     */
+    public static final boolean CLASS_LOG_OUTPUT_MODE = true;
+
+    private static final Log LOG;
+
+    static {
+        if (CLASS_LOG_OUTPUT_MODE == true) {
+            LOG = LogFactory.getLog(new Throwable().getStackTrace()[1].getClassName());
+        } else {
+            LOG = new NoOpLog();
+            System.out.println(new Throwable().getStackTrace()[1].getClassName() + "は、ログ出力抑止中です。");
+        }
+    }
     private final File midiFile;
     private final int loopCount;
     private final Sequencer sequencer;
-    
+
     public MidiPlayTask(File midiFile, int count) throws FileNotFoundException, IOException, MidiUnavailableException, InvalidMidiDataException {
-        
+
         this.midiFile = midiFile;
         this.loopCount = count;
-        
+
         if (this.midiFile == null) {
             throw new NullPointerException("ファイルが指定されていません。");
         }
@@ -59,14 +71,14 @@ public final class MidiPlayTask implements Runnable, AutoCloseable {
         MessageFormat msg1 = new MessageFormat("File={0},LoopCount={1}");
         Object[] parameters1 = {this.midiFile.getAbsolutePath(), loopCount};
         LOG.info(msg1.format(parameters1));
-        
+
         LOG.trace("シーケンサ初期化開始");
         sequencer = MidiSystem.getSequencer();
         sequencer.setLoopEndPoint(-1L);
         sequencer.setLoopCount(loopCount);
         sequencer.open();
         LOG.trace("シーケンサ初期化完了");
-        
+
         LOG.trace("ファイル読み込み開始");
         try (FileInputStream in = new FileInputStream(this.midiFile)) {
             Sequence sequence = MidiSystem.getSequence(in);
@@ -75,19 +87,19 @@ public final class MidiPlayTask implements Runnable, AutoCloseable {
         }
         LOG.trace("ファイル読み込み完了");
     }
-    
+
     public int getLoopCount() {
         return loopCount;
     }
-    
+
     public synchronized long getMicrosecondLength() {
         return sequencer.getMicrosecondLength();
     }
-    
+
     public synchronized long getMicrosecondPosition() {
         return sequencer.getMicrosecondPosition();
     }
-    
+
     @Override
     public synchronized void run() {
         try {
@@ -103,7 +115,7 @@ public final class MidiPlayTask implements Runnable, AutoCloseable {
      */
     private synchronized void play(int count) throws InterruptedException {
         sequencer.setLoopCount(count);
-        MessageFormat msg1 = new MessageFormat("再生開始。File={0},LoopCount={1},Length(MicroSecnd)={2}");
+        MessageFormat msg1 = new MessageFormat("再生開始。File={0},LoopCount={1},Length(MicroSecond)={2}");
         Object[] parameters1 = {midiFile.getAbsolutePath(), count, sequencer.getMicrosecondLength()};
         LOG.info(msg1.format(parameters1));
         sequencer.start();
@@ -126,5 +138,5 @@ public final class MidiPlayTask implements Runnable, AutoCloseable {
         sequencer.close();
         LOG.info("クローズ");
     }
-    
+
 }

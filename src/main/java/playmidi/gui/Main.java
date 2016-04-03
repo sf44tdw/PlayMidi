@@ -15,6 +15,7 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.swing.JFileChooser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.impl.NoOpLog;
 import playmidi.task.MidiPlayTask;
 
 /**
@@ -24,9 +25,23 @@ import playmidi.task.MidiPlayTask;
  */
 public class Main extends javax.swing.JFrame {
 
+    /**
+     * falseのとき、このクラスはログを出さなくなる
+     */
+    public static final boolean CLASS_LOG_OUTPUT_MODE = true;
+
+    private static final Log LOG;
+
+    static {
+        if (CLASS_LOG_OUTPUT_MODE == true) {
+            LOG = LogFactory.getLog(new Throwable().getStackTrace()[1].getClassName());
+        } else {
+            LOG = new NoOpLog();
+            System.out.println(new Throwable().getStackTrace()[1].getClassName() + "は、ログ出力抑止中です。");
+        }
+    }
     private static String arg = "";
 
-    private static final Log LOG = LogFactory.getLog(Main.class);
     private ScheduledExecutorService barRunner = null;
     private ScheduledExecutorService playerRunner = null;
     private MidiPlayTask pTask = null;
