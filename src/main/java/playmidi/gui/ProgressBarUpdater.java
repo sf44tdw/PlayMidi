@@ -6,8 +6,10 @@
 package playmidi.gui;
 
 import javax.swing.JProgressBar;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+
+import loggerconfigurator.LoggerConfigurator;
 import playmidi.task.MidiPlayTask;
 
 /**
@@ -16,8 +18,7 @@ import playmidi.task.MidiPlayTask;
  */
 public class ProgressBarUpdater implements Runnable {
 
-    private static final Log LOG = LogFactory.getLog(ProgressBarUpdater.class);
-
+	private static final Logger LOG = LoggerConfigurator.getlnstance().getCallerLogger();
     private final JProgressBar bar;
     private final MidiPlayTask pTask;
 
@@ -37,13 +38,13 @@ public class ProgressBarUpdater implements Runnable {
     @Override
     public void run() {
         long temp = (this.pTask.getMicrosecondPosition() * 1000) / this.pTask.getMicrosecondLength();
-        LOG.trace(temp);
+        if (LOG.isTraceEnabled()) LOG.trace(Long.toString(temp));
         this.bar.setValue((int) temp);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             this.bar.setValue(this.bar.getMinimum());
-            LOG.error(e);
+            LOG.error("エラー",e);
         }
     }
 

@@ -5,28 +5,33 @@
  */
 package playmidi.task;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.slf4j.Logger;
+
+import loggerconfigurator.LoggerConfigurator;
 
 /**
  *
  * @author normal
  */
 public class MidiPlayTaskTest {
+
+    private static final Logger LOG = LoggerConfigurator.getlnstance().getCallerLogger();
 
     private final File name = new File("./testdata/entertainer.mid");
     private final int count = 1;
@@ -54,13 +59,15 @@ public class MidiPlayTaskTest {
     @Test(expected = FileNotFoundException.class)
     public void testConstructor_exists() throws MidiUnavailableException, IOException, FileNotFoundException, InvalidMidiDataException {
         File name_dummy = new File("./testdata/entertainer2.mid");
-        MidiPlayTask instance = new MidiPlayTask(name_dummy, count);
+        try (MidiPlayTask instance = new MidiPlayTask(name_dummy, count)) {
+		}
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructor_isFile() throws MidiUnavailableException, IOException, FileNotFoundException, InvalidMidiDataException {
         File name_dummy = new File("./testdata/");
-        MidiPlayTask instance = new MidiPlayTask(name_dummy, count);
+        try (MidiPlayTask instance = new MidiPlayTask(name_dummy, count)) {
+		}
     }
 
 //    @Test(expected = IllegalArgumentException.class)
@@ -76,11 +83,12 @@ public class MidiPlayTaskTest {
      */
     @Test
     public void testGetLoopCount() throws IllegalArgumentException, MidiUnavailableException, IOException, FileNotFoundException, InvalidMidiDataException {
-        System.out.println("getLoopCount");
-        MidiPlayTask instance = new MidiPlayTask(name, count);
-        int expResult = count;
-        int result = instance.getLoopCount();
-        assertEquals(expResult, result);
+        LOG.info("getLoopCount");
+        try (MidiPlayTask instance = new MidiPlayTask(name, count)) {
+			int expResult = count;
+			int result = instance.getLoopCount();
+			assertEquals(expResult, result);
+		}
     }
 
     /**
@@ -90,11 +98,12 @@ public class MidiPlayTaskTest {
      */
     @Test
     public void testGetMicrosecondLength() throws IllegalArgumentException, MidiUnavailableException, IOException, FileNotFoundException, InvalidMidiDataException {
-        System.out.println("getMicrosecondLength");
-        MidiPlayTask instance = new MidiPlayTask(name, count);
-        long expResult = 71999928L;
-        long result = instance.getMicrosecondLength();
-        assertEquals(expResult, result);
+        LOG.info("getMicrosecondLength");
+        try (MidiPlayTask instance = new MidiPlayTask(name, count)) {
+			long expResult = 71999928L;
+			long result = instance.getMicrosecondLength();
+			assertEquals(expResult, result);
+		}
     }
 
     /**
@@ -104,20 +113,20 @@ public class MidiPlayTaskTest {
      */
     @Test
     public void testGetMicrosecondPosition() throws IllegalArgumentException, MidiUnavailableException, IOException, FileNotFoundException, InvalidMidiDataException {
-        System.out.println("getMicrosecondPosition");
-        MidiPlayTask instance = new MidiPlayTask(name, count);
-        long expResult = 0L;
-        long result = instance.getMicrosecondPosition();
-        assertEquals(expResult, result);
+        LOG.info("getMicrosecondPosition");
+        try (MidiPlayTask instance = new MidiPlayTask(name, count)) {
+			long expResult = 0L;
+			long result = instance.getMicrosecondPosition();
+			assertEquals(expResult, result);
+		}
     }
-    private static final Log LOG = LogFactory.getLog(MidiPlayTaskTest.class);
 
     /**
      * Test of run method, of class MidiPlayTask.
      */
     @Test
     public void testRun() throws IOException, FileNotFoundException, MidiUnavailableException, InvalidMidiDataException, InterruptedException {
-        System.out.println("run");
+        LOG.info("run");
         ScheduledExecutorService playerRunner = Executors.newSingleThreadScheduledExecutor();
 
         try (MidiPlayTask instance = new MidiPlayTask(name, count)) {
