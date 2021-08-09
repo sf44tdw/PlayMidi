@@ -61,20 +61,24 @@ public final class MidiPlayTask implements Runnable, AutoCloseable {
 		Object[] parameters1 = { this.midiFile.getAbsolutePath(), loopCount };
 		LOG.info(msg1.format(parameters1));
 
-		LOG.trace("シーケンサ初期化開始");
+		if (LOG.isTraceEnabled())
+			LOG.trace("シーケンサ初期化開始");
 		sequencer = MidiSystem.getSequencer();
 		sequencer.setLoopEndPoint(-1L);
 		sequencer.setLoopCount(loopCount);
 		sequencer.open();
-		LOG.trace("シーケンサ初期化完了");
+		if (LOG.isTraceEnabled())
+			LOG.trace("シーケンサ初期化完了");
 
-		LOG.trace("ファイル読み込み開始");
+		if (LOG.isTraceEnabled())
+			LOG.trace("ファイル読み込み開始");
 		try (FileInputStream in = new FileInputStream(this.midiFile)) {
 			Sequence sequence = MidiSystem.getSequence(in);
 			sequencer.setLoopCount(count);
 			sequencer.setSequence(sequence);
 		}
-		LOG.trace("ファイル読み込み完了");
+		if (LOG.isTraceEnabled())
+			LOG.trace("ファイル読み込み完了");
 	}
 
 	public int getLoopCount() {
@@ -95,7 +99,7 @@ public final class MidiPlayTask implements Runnable, AutoCloseable {
 			this.play(loopCount);
 		} catch (InterruptedException ex) {
 			this.close();
-			LOG.error("エラー",ex);
+			LOG.error("エラー", ex);
 		}
 	}
 
