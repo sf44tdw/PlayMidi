@@ -13,6 +13,11 @@
 			<artifactId>slf4jloggerconfigurator</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+				<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
